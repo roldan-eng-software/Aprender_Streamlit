@@ -24,18 +24,17 @@ data = load_data(10000)
 # Notify the reader that the data was successfully loaded.
 data_load_state.text("Concluido!")
 
-st.subheader('Raw data')
-st.write(data)
+if st.checkbox('Mostrar a tabela de dados'):
+    st.subheader('Tabela de dados')
+    st.write(data)
+
 st.subheader('Numeros de chamadas por hora')
 
 hist_values = np.histogram(
     data[DATE_COLUMN].dt.hour, bins=24, range=(0,24))[0]
 
 st.bar_chart(hist_values)
-
-st.subheader('Mapa de todos os chamados')
-st.map(data)
-st.subheader('Mapa dos chamados às 17:00')
-hour_to_filter = 17
+hour_to_filter = st.slider('hour', 0, 23, 17)  # min: 0h, max: 23h, default: 17h
 filtered_data = data[data[DATE_COLUMN].dt.hour == hour_to_filter]
+st.subheader(f'Map of all pickups at {hour_to_filter}:00')
 st.map(filtered_data)
