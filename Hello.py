@@ -25,3 +25,49 @@ st.markdown(
 
 """
 )
+
+# Lista automática de páginas (mostra botões na sidebar que navegam para cada página em `pages/`)
+import os
+import re
+
+def _discover_pages():
+    pages_dir = os.path.join(os.path.dirname(__file__), "pages")
+    discovered = []
+    if not os.path.isdir(pages_dir):
+        return discovered
+
+    for fname in sorted(os.listdir(pages_dir)):
+        if not fname.endswith(".py"):
+            continue
+        fpath = os.path.join(pages_dir, fname)
+        title = None
+        try:
+            with open(fpath, "r", encoding="utf-8") as f:
+                content = f.read()
+            m = re.search(r"set_page_config\(.*page_title\s*=\s*['\"]([^'\"]+)['\"]", content, re.DOTALL)
+            if m:
+                title = m.group(1)
+        except Exception:
+            # se falhar, ignore e use o nome do arquivo
+            title = None
+
+        if not title:
+            # remove a extensão e underscore/emoji extras para um rótulo legível
+            title = os.path.splitext(fname)[0]
+            # opcional: substituir underscores por espaços
+            title = title.replace("_", " ")
+
+        discovered.append((title, fname))
+
+    return discovered
+
+
+pages = _discover_pages()
+if pages:
+    st.sidebar.markdown("### Demonstrações")
+    for title, fname in pages:
+        # botão que seta parâmetro de query 'page' para que o Streamlit abra a página
+        if st.sidebar.button(title):
+            # define o parâmetro de query que Streamlit usa para navegar entre páginas
+            st.experimental_set_query_params(page=title)
+            st.experimental_rerun()
