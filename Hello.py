@@ -7,7 +7,7 @@ st.set_page_config(
 
 st.write("# Bem vindo ao Streamlit! 👋")
 
-st.sidebar.success("Selecione a pagina.")
+#st.sidebar.success("Selecione a pagina.")
 
 st.markdown(
     """
@@ -61,7 +61,7 @@ def _discover_pages():
 
     return discovered
 
-
+'''
 pages = _discover_pages()
 if pages:
     st.sidebar.markdown("### Demonstrações")
@@ -71,3 +71,4 @@ if pages:
             # define o parâmetro de query que Streamlit usa para navegar entre páginas
             st.experimental_set_query_params(page=title)
             st.experimental_rerun()
+'''
